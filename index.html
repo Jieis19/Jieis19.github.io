@@ -27,10 +27,10 @@
             <style>
                 #map_f731eb9a5ad2a72e71b261666c22a8a2 {
                     position: relative;
-                    width: 100.0%;
-                    height: 100.0%;
-                    left: 0.0%;
-                    top: 0.0%;
+                    width: 80.0%;
+                    height: 80.0%;
+                    left: 10.0%;
+                    top: 5.0%;
                 }
                 .leaflet-container { font-size: 1rem; }
             </style>
@@ -4331,5 +4331,44 @@
 
         
     
+</script>
+<script>
+var scriptTags = document.getElementsByTagName('script');
+
+var scriptContent = scriptTags[5].innerHTML;
+  <!-- console.log(scriptContent); -->
+var times = [];
+
+var divRegex = /<div id="html_[^"]*"[^>]*>(.*?)<\/div>/g;
+var timeRegex = /\d{1,2}:\d{2}/g;
+
+var divMatches = scriptContent.match(divRegex);
+
+if (divMatches) {
+  for (var i = 0; i < divMatches.length; i++) {
+    var divContent = divMatches[i];
+    var matches = divContent.match(timeRegex);
+    
+    if (matches) {
+      times = times.concat(matches);
+    }
+  }
+}
+
+// 创建下拉菜单
+times = times.sort().filter(function(value, index, array) {
+  return index === 0 || value !== array[index - 1];
+});
+
+// 创建下拉菜单
+var select = document.createElement("select");
+
+for (var j = 0; j < times.length; j++) {
+  var option = document.createElement("option");
+  option.text = times[j];
+  select.add(option);
+}
+
+document.body.appendChild(select);
 </script>
 </html>
