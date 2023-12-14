@@ -4348,9 +4348,13 @@ if (divMatches) {
   for (var i = 0; i < divMatches.length; i++) {
     var divContent = divMatches[i];
     var matches = divContent.match(timeRegex);
-    
+    <!-- var time = matches[0]; -->
+	var timeRange = matches.join('~');
+
+	console.log(timeRange); // 输出时间范围：17:50~17:55
     if (matches) {
-      times = times.concat(matches);
+      times = times.concat(timeRange);
+	  <!-- times = matches.join('~'); -->
     }
   }
 }
@@ -4370,5 +4374,37 @@ for (var j = 0; j < times.length; j++) {
 }
 
 document.body.appendChild(select);
+
+
+// 根据选择的时间显示标签
+function showLabelOnMap(selectedTime) {
+  // 创建正则表达式，匹配符合时间的变量名
+  var markerRegex = new RegExp(`^marker_${selectedTime}`);
+  var popupRegex = new RegExp(`^popup_${selectedTime}`);
+
+  // 扫描脚本中的全部内容
+  var scriptTags = document.getElementsByTagName("script");
+  for (var i = 0; i < scriptTags.length; i++) {
+    var scriptContent = scriptTags[i].innerHTML;
+
+    // 在脚本内容中查找匹配的变量名
+    var markerVariable = markerRegex.exec(scriptContent);
+    var popupVariable = popupRegex.exec(scriptContent);
+
+    // 如果找到匹配的变量名，则获取对应的标记和标签弹出窗口，并显示标签
+    if (markerVariable && popupVariable) {
+      var marker = window[markerVariable[0]];
+      var popup = window[popupVariable[0]];
+      marker.bindPopup(popup).openPopup();
+    }
+  }
+}
+
+// 监听下拉菜单的选择事件
+select.addEventListener('change', function() {
+  var selectedTime = select.value;
+  showLabelOnMap(selectedTime);
+});
+
 </script>
 </html>
