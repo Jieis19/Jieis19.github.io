@@ -4337,6 +4337,19 @@ var scriptTags = document.getElementsByTagName('script');
 
 var scriptContent = scriptTags[5].innerHTML;
   <!-- console.log(scriptContent); -->
+  
+<!-- // 使用正则表达式匹配以"marker_"开头、以"popup_"开头的关键字 -->
+<!-- var regex = /marker_[a-zA-Z0-9]+\.bindPopup\(popup_[a-zA-Z0-9]+\)/g; -->
+<!-- var matches = scriptContent.match(regex); -->
+
+<!-- // 打印匹配到的关键字 -->
+<!-- console.log("匹配到的关键字有："); -->
+<!-- for (var i = 0; i < matches.length; i++) { -->
+  <!-- console.log(matches[i]); -->
+<!-- }   -->
+
+  
+  
 var times = [];
 
 var divRegex = /<div id="html_[^"]*"[^>]*>(.*?)<\/div>/g;
@@ -4350,7 +4363,6 @@ if (divMatches) {
     var matches = divContent.match(timeRegex);
     <!-- var time = matches[0]; -->
 	var timeRange = matches.join('~');
-
     if (matches) {
       times = times.concat(timeRange);
 	  <!-- times = matches.join('~'); -->
@@ -4363,7 +4375,7 @@ times = times.sort().filter(function(value, index, array) {
   return index === 0 || value !== array[index - 1];
 });
 
-// 创建下拉菜单
+
 var select = document.createElement("select");
 
 for (var j = 0; j < times.length; j++) {
@@ -4377,28 +4389,113 @@ document.body.appendChild(select);
 
 // 根据选择的时间显示标签
 function showLabelOnMap(selectedTime) {
-  // 创建正则表达式，匹配符合时间的变量名
-  var markerRegex = new RegExp(`^marker_${selectedTime}`);
-  var popupRegex = new RegExp(`^popup_${selectedTime}`);
+var scriptTags = document.getElementsByTagName('script');
 
-  // 扫描脚本中的全部内容
-  var scriptTags = document.getElementsByTagName("script");
-  for (var i = 0; i < scriptTags.length; i++) {
-    var scriptContent = scriptTags[i].innerHTML;
+var scriptContent = scriptTags[5].innerHTML;
+  <!-- console.log(scriptContent); -->
+var times = [];
 
-    // 在脚本内容中查找匹配的变量名
-    var markerVariable = markerRegex.exec(scriptContent);
-    var popupVariable = popupRegex.exec(scriptContent);
-
-    // 如果找到匹配的变量名，则获取对应的标记和标签弹出窗口，并显示标签
-    if (markerVariable && popupVariable) {
-      var marker = window[markerVariable[0]];
-      var popup = window[popupVariable[0]];
-      marker.bindPopup(popup).openPopup();
+var divRegex = /<div id="html_[^"]*"[^>]*>(.*?)<\/div>/g;
+var timeRegex = /\d{1,2}:\d{2}/g;
+// 使用正则表达式匹配以"marker_"开头、以"popup_"开头的关键字
+var regex = /marker_[a-zA-Z0-9]+\.bindPopup\(popup_[a-zA-Z0-9]+\)/g;
+var matches_marker = scriptContent.match(regex);
+var divMatches = scriptContent.match(divRegex);
+var keyword = selectedTime;
+if (divMatches) {
+  for (var i = 0; i < divMatches.length; i++) {
+    var divContent = divMatches[i];
+    var matches = divContent.match(timeRegex);
+    <!-- var time = matches[0]; -->
+	var timeRange = matches.join('~');
+    if (matches) {
+      times = times.concat(timeRange);
+	  <!-- times = matches.join('~'); -->
     }
   }
 }
+console.log("times:"+times);
+var times_all="'"+times+"'";
+var keywordArray = times_all.split(',');
 
+var positions = [];
+
+for (var i = 0; i < keywordArray.length; i++) {
+  if (keywordArray[i].includes(keyword.split('~')[0])) {
+    positions.push(i + 1);
+	
+  }
+}
+
+console.log("关键字 "+keyword.split('~')[0]+" 在时间关键字排列中出现在以下位置：" + positions.join(', '));
+
+console.log(" 在时间关键字排列中出现在以下位置："+positions.length);
+for (var i = 0; i < positions.length; i++) {
+  <!-- console.log(positions[i]); -->
+  var markerName = matches_marker[positions[i]-1].split('.bindPopup')[0];
+  var marker = window[markerName]; // 假设对象存在于全局作用域中
+  if (marker !== undefined) {
+	console.log("matches"+matches_marker[positions[i]-1].split('bindPopup(')[1].split(')')[0])
+var b = matches_marker[positions[i]-1].split('bindPopup(')[1].split(')')[0];
+var popupContent = window[b] || b;
+marker.bindPopup(popupContent);
+
+	<!-- matches_marker[positions[i]-1].split('bindPopup(')[1].split(')')[0] -->
+	<!-- popup_287b6e03afaf9b4e339636591db69aa5 -->
+    marker.openPopup();
+} else {
+    console.log(markerName + " is not defined.");
+}
+  
+  
+  
+  
+  
+
+<!-- console.log(markerName); -->
+     <!-- markerName="marker_be727a15c4db40965b63431d3692bf4b.bindPopup(popup_287b6e03afaf9b4e339636591db69aa5)"; -->
+	 <!-- marker.openPopup(); -->
+	 <!-- var b=marker_be727a15c4db40965b63431d3692bf4b.bindPopup(popup_287b6e03afaf9b4e339636591db69aa5).openPopup(); -->
+
+   
+  // 检查 marker 对象是否存在并具有 openPopup 方法
+  <!-- if (typeof marker !== "undefined" && typeof marker.openPopup === "function") { -->
+		<!-- marker.openPopup(); -->
+  <!-- } else { -->
+    <!-- console.log("对象 " + markerName + " 不存在或不具有 openPopup 方法"); -->
+  <!-- } -->
+}
+
+ <!-- marker_323255cf70aabec48465a0aeeaeab651.bindPopup(popup_f8bdd9300f195e8291801030f7882937).openPopup(); -->
+<!-- var index = times.indexOf(keyword.split('~')[0]); -->
+<!-- console.log("keyword:"+keyword.split('~')[0]) -->
+<!-- console.log("index:"+index) -->
+<!-- if (index !== -1) { -->
+  <!-- console.log("关键字 '" + keyword + "' 在时间关键字列表中的位置为: " + (index + 1)); -->
+  <!-- } -->
+<!-- var scriptTags = document.getElementsByTagName('script'); -->
+<!-- var scriptContent = scriptTags[5].innerHTML; -->
+
+<!-- var keyword = selectedTime; -->
+<!-- var regex = /(?<=\bpopup_|marker_)\w+/g; -->
+<!-- var matches = scriptContent.match(regex); -->
+
+<!-- if (matches) { -->
+  <!-- console.log("关键字 '" + keyword + "' 在以下字符串中找到以 'popup_' 或 'marker_' 开头的部分:"); -->
+  <!-- console.log(matches); -->
+<!-- } else { -->
+  <!-- console.log("关键字 '" + keyword + "' 未在任何字符串中找到以 'popup_' 或 'marker_' 开头的部分。"); -->
+<!-- } -->
+
+<!-- var keyword = "17:50"; -->
+<!-- var regex = /(popup_|marker_)\w+(?=.*17:50)/g; -->
+
+<!-- var match; -->
+<!-- while ((match = regex.exec(scriptContent)) !== null) { -->
+  <!-- var matchedString = match[0]; -->
+  <!-- console.log("关键字 '" + keyword + "' 前的字符串: " + matchedString); -->
+<!-- } -->
+}
 // 监听下拉菜单的选择事件
 select.addEventListener('change', function() {
   var selectedTime = select.value;
