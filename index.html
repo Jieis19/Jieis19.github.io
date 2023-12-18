@@ -34,14 +34,37 @@
                 }
                 .leaflet-container { font-size: 1rem; }
             </style>
-        
+        			<style type="text/css">
+	
+#bottom-outer {
+    color: #888;
+    text-align: center;
+    padding: 10px;
+    padding-top: 40px;
+    background-color: #fff;
+    font-size: 14px;
+    opacity:0.85;
+}
+
+</style>
 </head>
 <body>
     
-    <a href="http://cn.web-counter.net" title="计数器"><img src="http://www.web-counter.net/count_20091204.php?c=4BXKRU7fpfM" style="border:0;padding:0;margin:0;" alt="计数器"></a><br/><font size="1" face="Arial"><a href="http://de.web-counter.net" title="Besucherzähler">目前瀏覽人數</a><br/><a href="http://cn.web-counter.net" title="计数器"></a></font>
+    
 
             <div class="folium-map" id="map_f731eb9a5ad2a72e71b261666c22a8a2" ></div>
-        
+        <div id="bottom-outer">
+                <div id="bottom-inner">
+                   
+                
+                    <br>本站訪問量:<span id="result1"></span>
+
+                    -<span id="year"></span>
+
+
+                </div>
+            </div>
+        </div>
 </body>
 <script>
     
@@ -4503,5 +4526,21 @@ select.addEventListener('change', function() {
   showLabelOnMap(selectedTime);
 });
 
+</script>
+	<script type="text/javascript">
+	//流量统计
+                    if (localStorage.pagecount) {
+                        localStorage.pagecount = Number(localStorage.pagecount) + 1;
+                    } else {
+                        localStorage.pagecount = 1;
+                    }
+                    document.getElementById("result1").innerHTML = localStorage.pagecount;
+
+
+            //年份获取
+
+            var myDate = new Date();
+            var year = myDate.getFullYear();
+            document.getElementById('year').innerHTML = year;
 </script>
 </html>
