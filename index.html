@@ -4462,7 +4462,7 @@ for (var i = 0; i < positions.length; i++) {
 	console.log("matches"+matches_marker[positions[i]-1].split('bindPopup(')[1].split(')')[0])
 var b = matches_marker[positions[i]-1].split('bindPopup(')[1].split(')')[0];
 var popupContent = window[b] || b;
-marker.bindPopup(popupContent);
+marker.bindPopup(popupContent,{autoClose: false, closeOnClick: false});
 
 	<!-- matches_marker[positions[i]-1].split('bindPopup(')[1].split(')')[0] -->
 	<!-- popup_287b6e03afaf9b4e339636591db69aa5 -->
